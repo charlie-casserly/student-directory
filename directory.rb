@@ -14,14 +14,35 @@ def input_students
   students
 end
 
+def first_letter(students)
+  puts "View students beginning with which letter?"
+  puts "To finish, just hit return twice"
+  
+  while true do
+    letter = gets.chomp
+    break if letter.empty?
+    students.each do |student|
+      if student[:name].length < 12
+        if student[:name][0] == letter
+          puts "#{student[:name]} (#{student[:cohort]})"
+        end
+      end
+    end
+  end
+end
+
 def print_header
   puts "The students of Villains Academy"
   puts "-------------"
 end
 
 def print(students)
-  students.each_with_index do |student, index|
-    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
+  counter = 0
+  while students.length > counter
+    if students[counter][:name].length < 12
+      puts "#{students[counter][:name]} (#{students[counter][:cohort]} cohort)"
+    end
+    counter += 1
   end
 end
 
@@ -29,8 +50,8 @@ def print_footer(students)
   puts "Overall, we have #{students.count} great students"
 end
 
-#nothing happens until we call the methods
 students = input_students
 print_header
 print(students)
+first_letter(students)
 print_footer(students)
