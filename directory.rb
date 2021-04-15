@@ -75,8 +75,14 @@ def print_by_cohort(students)
 end
 
 students = input_students
-print_header
-print(students)
-first_letter(students)
-print_by_cohort(students)
-print_footer(students)
+while true do
+  if students.empty?
+    break
+  end
+  print_header
+  print(students)
+  first_letter(students)
+  print_by_cohort(students)
+  print_footer(students)
+  break
+end
