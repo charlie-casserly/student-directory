@@ -16,7 +16,7 @@ def input_students
     puts "Please enter #{name}'s height in cm".center(50, '-')
     height = gets.chomp
     students << {name: name, cohort: cohort, hobby: hobby, birthplace: birthplace, height: height}
-    puts "Now we have #{students.count} students".center(50, '-')
+    students.length == 1 ? (puts "Now we have 1 student") : (puts "Now we have #{students.count} students".center(50, '-'))
   end
   
   students
@@ -60,8 +60,8 @@ def print_footer(students)
 end
 
 def print_by_cohort(students)
-  puts "Which cohort would you like to print?"
-  puts "To finish, just hit return twice"
+  puts "Which cohort would you like to print?".center(50, '-')
+  puts "To finish, just hit return twice".center(50, '-')
   while true do
     input = gets.chomp.capitalize
     break if input.empty?
@@ -70,7 +70,7 @@ def print_by_cohort(students)
         puts student[:name]
       end
     end
-    puts "Select another cohort"
+    puts "Select another cohort".center(50, '-')
   end
 end
 
