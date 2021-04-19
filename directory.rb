@@ -1,4 +1,5 @@
 @students = []
+require 'csv'
 
 def input_students
   while true do
@@ -85,8 +86,8 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save student list"
+  puts "4. Load student list"
   puts "9. Exit"
 end
 
@@ -111,11 +112,9 @@ end
 
 def save_students(filename)
   filename.empty? ? save_file = "students.csv" : save_file = filename
-  File.open(save_file, "w") do |f|
+  CSV.open(save_file, "w") do |csv|
     @students.each do |student|
-      student_data = [student[:name], student[:cohort]]
-      csv_line = student_data.join(",")
-      f.puts csv_line
+      csv << [student[:name], student[:cohort]]
     end
   end
   puts "Student list saved"
@@ -123,13 +122,11 @@ end
 
 def load_students(filename)
   filename.empty? ? load_file = "students.csv" : load_file = filename
-  File.open(load_file, "r") do |f|
-    f.readlines.each do |line|
-    name, cohort = line.chomp.split(',')
-      push_student_info(name, cohort)
-    end
+  CSV.foreach(load_file, "r") do |line|
+    name, cohort = line
+    push_student_info(name, cohort)
   end
-  puts "#{@students.length} students from #{filename} loaded"
+  puts "#{@students.length} students from #{load_file} loaded"
 end
 
 def startup_load_students
