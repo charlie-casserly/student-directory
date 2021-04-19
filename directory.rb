@@ -15,12 +15,16 @@ def input_students
     birthplace = STDIN.gets.chomp.capitalize
     puts "Please enter #{name}'s height in cm".center(50, '-')
     height = STDIN.gets.chomp
-    @students << {name: name, cohort: cohort, hobby: hobby, birthplace: birthplace, height: height}
+    push_student_info(name, cohort)
     @students.length == 1 ? (puts "Now we have 1 student") : (puts "Now we have #{@students.count} students".center(50, '-'))
   end
 end
 
-def first_letter
+def push_student_info(name, cohort)
+  @students << {name: name, cohort: cohort.to_sym}
+end
+
+def search_first_letter
   puts "View students beginning with which letter?".center(50, '-')
   puts "To finish, just hit return twice".center(50, '-')
   
@@ -86,16 +90,18 @@ def print_menu
   puts "9. Exit"
 end
 
-def process(selection)
+def select_menu_item(selection)
   case selection
     when "1"
       input_students
     when "2"
       print_students_list
     when "3"
-      save_students
+      puts "Please enter a filename to save as"
+      save_students(STDIN.gets.chomp)
     when "4"
-      load_students
+      puts "Which file would you like to load?"
+      load_students(STDIN.gets.chomp)
     when "9"
       exit
     else
@@ -103,26 +109,30 @@ def process(selection)
   end
 end
 
-def save_students
-  file = File.open("students.csv", "w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+def save_students(filename)
+  filename.empty? ? save_file = "students.csv" : save_file = filename
+  File.open(save_file, "w") do |f|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      f.puts csv_line
+    end
   end
-  file.close
+  puts "Student list saved"
 end
 
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-  name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+def load_students(filename)
+  filename.empty? ? load_file = "students.csv" : load_file = filename
+  File.open(load_file, "r") do |f|
+    f.readlines.each do |line|
+    name, cohort = line.chomp.split(',')
+      push_student_info(name, cohort)
+    end
   end
-  file.close
+  puts "#{@students.length} students from #{filename} loaded"
 end
 
-def try_load_students
+def startup_load_students
   filename = ARGV.first # first argument from the command line
   return if filename.nil? # get out of the method if it isn't given
   if File.exists?(filename) # if it exists
@@ -137,9 +147,9 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(STDIN.gets.chomp)
+    select_menu_item(STDIN.gets.chomp)
   end
 end
 
-try_load_students
+startup_load_students
 interactive_menu
